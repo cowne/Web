@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class DAO {
     private static String jbdcURL = "jdbc:mysql://localhost:3306/test";
     private static String jbdcUsername = "root";
-    private static String jbdcPassword = "cowne0606";
+    private static String jbdcPassword = "root";
 
     protected static Connection getConnection(){
         Connection connection = null;
