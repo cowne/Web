@@ -16,28 +16,24 @@
 <p style="color:red;" align="center">${message}</p>
 <c:if test="${sessionScope.user != null}">
     <h2>Hello ${sessionScope.user.username}</h2>
-    <p><a href="/logout?action=logout">Logout</a></p>
-    <p><a href="/image">Image</a></p>
+    <p><a href="${pageContext.request.contextPath}/logout">Logout</a></p>
+    <p><a href="${pageContext.request.contextPath}/image">Image</a></p>
     <a href="/note">Note</a>
 
     <h2>User Info: ${user.fullname}</h2>
 
     <h3>Update User info</h3>
-    <form method="post" action="<c:url value='/change-info'/>">
-        Full name:<input type="text" name="fullname">
-        <input type="hidden" name="action" value="changeName">
+    <form method="post" action="${pageContext.request.contextPath}/user/update">
+        Full name:<input type="text" name="fullname" value="${user.fullname}">
         <button type="submit">Change info</button>
     </form>
 
-    <form method="post" action="/delete">
-        <input type="hidden" name="action" value="deleteAccount">
-        <button type="submit">Delete account</button>
-    </form>
+    <p>Carefully with delete account! <a href="${pageContext.request.contextPath}/user/delete">Delete account</a> </p>
 
 </c:if>
 <c:if test="${sessionScope.user == null}">
-    <p><a href="/login">Login</a></p>
-    <a href="/signUp">Sign Up</a>
+    <p><a href="${pageContext.request.contextPath}/login">Login</a></p>
+    <a href="${pageContext.request.contextPath}/signUp">Sign Up</a>
 </c:if>
 </body>
 </html>

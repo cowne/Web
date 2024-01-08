@@ -16,7 +16,7 @@
 <p>${message}</p>
 <h1 align="center">Image Gallery</h1>
 <div align="center">
-    <form method="post" action="/image" enctype="multipart/form-data">
+    <form method="post" action="${pageContext.request.contextPath}/image/add" enctype="multipart/form-data">
         Select Image:<input type="file" name="image">
         <input type="hidden" value="addImage" name="action">
         <button type="submit">Add image</button>
@@ -33,13 +33,12 @@
             <tr>
                 <th><img src="img/${x.name}" width="400" height="500" alt=""></th>
                 <th width="300px">
-                    <form method="post" action="/image" enctype="multipart/form-data">
+                    <form method="post" action="${pageContext.request.contextPath}/image/update" enctype="multipart/form-data">
                         Update Image:<input type="file" name="image">
-                        <input type="hidden" value="update" name="action">
                         <input type="hidden" value="${x.id}" name="id">
                         <button type="submit">Update image</button>
                     </form>
-                    <a href="/image?action=delete&id=${x.id}">Delete</a>
+                    <a href="${pageContext.request.contextPath}/image/delete?id=${x.id}">Delete</a>
                 </th>
             </tr>
         </c:forEach>

@@ -17,8 +17,10 @@
         <p>${message}</p>
         Username:<input type="text" name="username"><br>
         Password:<input type="password" name="password"><br>
-        <button type="submit">Sign up</button>
+        <button type="submit">Log in</button>
     </form>
 </div>
+
+<p>You don't have an account? <a href="/signUp">Sign up in here</a> </p>
 </body>
 </html>

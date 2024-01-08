@@ -7,6 +7,7 @@
 </head>
 <body>
 <h1>This is the note page.</h1>
+<p>${message}</p>
 <table align="center">
     <tr>
         <th>Note</th>
@@ -17,8 +18,8 @@
             <tr>
                 <th>${x.content}</th>
                 <th>
-                    <a href="/note?action=delete&id=${x.id}">Delete</a>
-                    <a href="/note?action=update&id=${x.id}">Update</a>
+                    <a href="${pageContext.request.contextPath}/note/delete?id=${x.id}">Delete</a>
+                    <a href="${pageContext.request.contextPath}/note/update?id=${x.id}">Update</a>
                 </th>
             </tr>
         </c:forEach>
@@ -26,8 +27,10 @@
 </table>
 
 <form action="/note" method="post">
-    Enter your note:<input type="text" name="note">
+    Enter your note:<input type="text" name="content">
     <button type="submit">Note</button>
 </form>
+
+<a href="${pageContext.request.contextPath}/user">Back to the user page.</a>
 </body>
 </html>

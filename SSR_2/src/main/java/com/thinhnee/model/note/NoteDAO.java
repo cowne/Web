@@ -50,12 +50,13 @@ public class NoteDAO {
         return list;
     }
 
-    public static void deleteNote(int id){
-        String query = "delete from note where id = ?";
+    public static void deleteNote(int id, String username){
+        String query = "delete from note where id = ? and username = ?";
         try{
             connection = DBContext.getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, String.valueOf(id));
+            preparedStatement.setString(2,username);
             preparedStatement.executeUpdate();
 
         }catch (Exception e){
@@ -63,15 +64,16 @@ public class NoteDAO {
         }
     }
 
-    public static void updateNote(int id, String content){
+    public static void updateNote(int id, String content, String username){
         String query = "update note\n" +
                 "set content =?\n" +
-                "where id = ?";
+                "where id = ? and username=?";
         try{
             connection = DBContext.getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,content);
             preparedStatement.setString(2, String.valueOf(id));
+            preparedStatement.setString(3,username);
             preparedStatement.executeUpdate();
         }catch (Exception e){
             System.out.println(e);

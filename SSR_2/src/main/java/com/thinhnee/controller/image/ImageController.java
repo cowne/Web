@@ -10,69 +10,101 @@ import com.thinhnee.model.user.UserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-@MultipartConfig
-@WebServlet(name = "ImageController", urlPatterns = "/image")
-public class ImageController extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        UserModel user = (UserModel) session.getAttribute("user");
-        String username = user.getUsername();
 
-        String action = request.getParameter("action");
-        String id = request.getParameter("id");
+public class ImageController {
 
-        if(action != null && id != null){
-            int image_id = Integer.parseInt(id);
-            if (action.equals("delete")) {
-                ImageDAO.deleteImage(image_id, username);
-                request.setAttribute("message", "Delete image successfully.");
-            } else {
-                System.out.println("nothing here");
-            }
+    @WebServlet(urlPatterns = "/image")
+    public static class viewAllImage extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            HttpSession session = req.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
+            String username = user.getUsername();
+            List<ImageModel> list = ImageDAO.getAllImage(username);
+
+//            String message = req.getParameter("message");
+//
+//            req.setAttribute("message", message);
+            req.setAttribute("imageName", list);
+            req.getServletContext().getRequestDispatcher("/image.jsp").forward(req, resp);
         }
 
-        List<ImageModel> list = ImageDAO.getAllImage(username);
-        request.setAttribute("imageName", list);
-        request.getRequestDispatcher("/image.jsp").forward(request,response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        UserModel user = (UserModel) session.getAttribute("user");
-        String username = user.getUsername();
-        String action = request.getParameter("action");
+    @MultipartConfig
+    @WebServlet(urlPatterns = "/image/add")
+    public static class addImage extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            super.doGet(req, resp);
+        }
 
-        if(action!=null){
-            Part image = request.getPart("image");
+        @Override
+        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            HttpSession session = req.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
+            String username = user.getUsername();
+
+            Part image = req.getPart("image");
             String filename = image.getSubmittedFileName();
-            String uploadPath = request.getServletContext().getRealPath("/") + "img/"+filename;
+            String uploadPath = req.getServletContext().getRealPath("/") + "img/" + filename;
 
-            try{
+            try {
                 FileOutputStream fos = new FileOutputStream(uploadPath);
                 InputStream is = image.getInputStream();
                 byte[] data = new byte[is.available()];
                 is.read(data);
                 fos.write(data);
                 fos.close();
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
             }
 
-            switch (action){
-                case "addImage":
-                    ImageDAO.addImage(filename,username);
-                    break;
-                case "update":
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    ImageDAO.updateImage(id,filename,username);
-                    break;
-                default:
-                    System.out.println("nothing to do");
-            }
-
+            ImageDAO.addImage(filename,username);
+            resp.sendRedirect("/image");
         }
-        response.sendRedirect("/image");
+    }
+
+    @WebServlet(urlPatterns = "/image/delete")
+    public static class deleteImage extends HttpServlet{
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            HttpSession session = req.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
+            String username = user.getUsername();
+            int id = Integer.parseInt(req.getParameter("id"));
+            ImageDAO.deleteImage(id,username);
+
+            resp.sendRedirect("/image");
+        }
+    }
+
+    @WebServlet(urlPatterns = "/image/update")
+    @MultipartConfig
+    public static class updateImage extends HttpServlet{
+        @Override
+        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            HttpSession session = req.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
+            String username = user.getUsername();
+            int id = Integer.parseInt(req.getParameter("id"));
+
+            Part image = req.getPart("image");
+            String filename = image.getSubmittedFileName();
+            String uploadPath = req.getServletContext().getRealPath("/") + "img/" + filename;
+
+            try {
+                FileOutputStream fos = new FileOutputStream(uploadPath);
+                InputStream is = image.getInputStream();
+                byte[] data = new byte[is.available()];
+                is.read(data);
+                fos.write(data);
+                fos.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            ImageDAO.updateImage(id,filename,username);
+            resp.sendRedirect("/image");
+        }
     }
 }

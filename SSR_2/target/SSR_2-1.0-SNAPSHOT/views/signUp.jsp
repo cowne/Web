@@ -22,5 +22,6 @@
             <button type="submit">Create account</button>
         </form>
     </div>
+<p>You have an account? <a href="/login">Login here</a> </p>
 </body>
 </html>
